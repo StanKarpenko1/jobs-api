@@ -1,8 +1,16 @@
 import mongoose from 'mongoose';
-// import bcrypt from 'bcryptjs';
-// import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Document } from 'mongoose';
 
-export const UserSchema = new mongoose.Schema({
+export interface IUser extends Document {
+    name: string;
+    email: string;
+    password: string;
+    createJWT: () => string;
+  }
+
+export const UserSchema = new mongoose.Schema<IUser>({
   name: {
     type: String,
     required: [true, 'Please provide name'],
@@ -22,27 +30,32 @@ export const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide password'],
     minlength: 6,
+    
   },
 })
 
-// UserSchema.pre('save', async function () {
-//   const salt = await bcrypt.genSalt(10)
-//   this.password = await bcrypt.hash(this.password, salt)
-// })
+UserSchema.pre('save', async function () {
 
-// UserSchema.methods.createJWT = function () {
-//   return jwt.sign(
-//     { userId: this._id, name: this.name },
-//     process.env.JWT_SECRET,
-//     {
-//       expiresIn: process.env.JWT_LIFETIME,
-//     }
-//   )
-// }
+  const salt = await bcrypt.genSalt(10)
+  this.password = await bcrypt.hash(this.password, salt)
+
+})
+
+UserSchema.methods.createJWT = function () {
+  return jwt.sign(
+    { userId: this._id, name: this.name },
+    'jwtSecret',
+    // process.env.JWT_SECRET,
+    {
+    //   expiresIn: process.env.JWT_LIFETIME,
+    expiresIn: "30d"
+    }
+  )
+}
 
 // UserSchema.methods.comparePassword = async function (canditatePassword) {
 //   const isMatch = await bcrypt.compare(canditatePassword, this.password)
 //   return isMatch
 // }
 
-export const User = mongoose.model('User', UserSchema);
+export const User = mongoose.model<IUser>('User', UserSchema);
