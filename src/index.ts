@@ -5,9 +5,12 @@ import compression from 'compression';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './db/connect';
+import { auth as authenticateUser }  from './middleware/auth'
 
 // Initialize environment variables
 dotenv.config();
+
+
 
 // ROUTERS
 import authRouter from './router/auth';
@@ -28,7 +31,7 @@ app.use(cookieParser());
 
 // Define routes
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/jobs', jobsRouter);
+app.use('/api/v1/jobs', authenticateUser, jobsRouter);
 
 // Error handling middlewares
 app.use(notFound);

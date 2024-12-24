@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
+import { IAuthenticatedRequest } from "interfaces/auth.interface";
 
 
 export const getAllJobs = async (req: Request, res: Response ) => {
@@ -9,8 +10,8 @@ export const getJob = async (req: Request, res: Response ) => {
     res.send('Get Job by ID')
 }
 
-export const createJob = async (req: Request, res: Response ) => {
-    res.send('Create Job by ID')
+export const createJob = async (req: IAuthenticatedRequest, res: Response ) => {
+    res.json(req.user)
 }
 
 export const deleteJob = async (req: Request, res: Response ) => {

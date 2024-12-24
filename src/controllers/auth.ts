@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import { User } from "../models/User";
+import { badRequest, createCustomError, CustomError, UnauthenticatedError } from "../errors/custom-error";
 
 
 export const register = async (req: Request, res: Response) => {
@@ -30,14 +31,14 @@ export const register = async (req: Request, res: Response) => {
         //#endregion commented code
 
         // create user
-        const user = await User.create({ ...req.body});
+        const user = await User.create({ ...req.body });
         const token = user.createJWT()
         res
             .status(StatusCodes.CREATED)
             .json({
 
                 msg: "Created",
-                
+
                 newUser: {
                     id: user._id,
                     name: user.name,
@@ -47,19 +48,54 @@ export const register = async (req: Request, res: Response) => {
 
             })
 
-
     } catch (e) {
 
         console.error("Error in register:", e);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            msg: "Something went wrong",
-            error: e.message
+            msg: `Error in register: ${e.message}`,
         });
-        
+
     }
 }
 
-export const login = async (req: Request, res: Response) => {
-    res.send('Login User')
+export const login = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        const { email, password } = req.body
+
+        if (!email || !password) {
+            throw badRequest("Provide Email and Password")
+        }
+
+        // if (!email) {
+        //     throw badRequest("Email is required")
+        // }
+        // if (!password) {
+        //     throw badRequest("Password is required")
+        // }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            throw UnauthenticatedError();
+        }
+
+        // compare password
+        const isPasswordCorrect = await user.comparePassword( password )
+        if (!isPasswordCorrect){
+            throw UnauthenticatedError();
+        }
+
+        const token = user.createJWT();
+
+        res.status(StatusCodes.OK).json({
+            user: { name: user.name },
+            token
+        })
+
+    } catch (error) {
+
+        next(error)
+
+    }
 }
 
