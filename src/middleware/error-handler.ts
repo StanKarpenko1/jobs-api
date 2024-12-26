@@ -19,7 +19,7 @@ export const errorHandlerMiddleware = (
         return res.status(errorStatus).json({ msg: err.message })
     }
 
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Server error'})
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Server error', error: err.message })
 
 }
 

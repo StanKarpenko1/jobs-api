@@ -10,7 +10,7 @@ export const auth = function (req: IAuthenticatedRequest, res: Response, next: N
 
         // check header
         const authHeader = req.headers.authorization
-        if (!authHeader || !authHeader.startsWith('Bearer')) {
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
             throw UnauthenticatedError()
         }
         const token = authHeader.split(' ')[1]
@@ -19,10 +19,13 @@ export const auth = function (req: IAuthenticatedRequest, res: Response, next: N
         
         // attach user to the job router
         req.user = {userId: (payload as any).userId, name: (payload as any).name}
+        
         next()
+
     } catch (error) {
 
         next(error)
+
     }
 
 }
