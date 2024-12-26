@@ -20,7 +20,6 @@ export class CustomError extends Error implements CustomErrorType {
 
 export const createCustomError = (msg: string, statusCode: number): CustomError => {
     return new CustomError(msg, statusCode);
-
 };
 
 export const badRequest = (msg: string, statusCode = StatusCodes.BAD_REQUEST): CustomError => {
@@ -30,7 +29,6 @@ export const badRequest = (msg: string, statusCode = StatusCodes.BAD_REQUEST): C
 export const UnauthenticatedError = (msg = "Invalid credentials...", statusCode = StatusCodes.UNAUTHORIZED): CustomError => {
     return new CustomError(msg, statusCode);
 };
-
 
 export const asyncErrorHandler = (
     fn: (req: IAuthenticatedRequest, res: Response, next: NextFunction) => Promise<void>

@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { IAuthenticatedRequest } from "interfaces/auth.interface";
 import { Job } from "../models/Job";
-import { createCustomError } from "../errors/custom-error";
+import { createCustomError, CustomError } from "../errors/custom-error";
 import { StatusCodes } from "http-status-codes";
 import { asyncErrorHandler } from "../errors/custom-error";
+import { STATUS_CODES } from "http";
 
 export const getAllJobs = asyncErrorHandler(async (req: IAuthenticatedRequest, res: Response) => {
     const jobs = await Job.find({ createdBy: req.user.userId }).sort('createdAt');
