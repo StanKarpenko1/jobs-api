@@ -1,10 +1,12 @@
-import { StatusCodes } from "http-status-codes";
+import { Request, Response, NextFunction, RequestHandler } from "express";import { StatusCodes } from "http-status-codes";
+import { IAuthenticatedRequest } from "interfaces/auth.interface";
 
 export interface CustomErrorType extends Error {
     statusCode: number;
 }
 
 export class CustomError extends Error implements CustomErrorType { 
+    
     statusCode: number;
 
     constructor(message: string, statusCode: number) {
@@ -30,5 +32,11 @@ export const UnauthenticatedError = (msg = "Invalid credentials...", statusCode 
 };
 
 
-
+export const asyncErrorHandler = (
+    fn: (req: IAuthenticatedRequest, res: Response, next: NextFunction) => Promise<void>
+): RequestHandler => {
+    return (req, res, next) => {
+        Promise.resolve(fn(req, res, next)).catch(next);
+    };
+};
 
