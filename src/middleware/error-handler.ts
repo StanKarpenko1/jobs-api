@@ -13,23 +13,36 @@ export const errorHandlerMiddleware = (
 
 ): any => {
 
-    const errorStatus = err.statusCode;
-
-    if (err.code && err.code === 11000) {
-        err.message = `duplicate value entered for: ${Object.keys(err.keyValue)}`
-        err.statusCode = 400
+    let customError = {
+        // set default
+        statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+        msg: err.message || 'Something went wrong...'
     }
 
-    if (err instanceof CustomError) {
-        
-        return res.status(errorStatus).json({ msg: err.message })
+    // if (err instanceof CustomError) {  
+    //     return res.status(err.statusCode).json({ msg: err.message })
+    // }
+
+    if (err.name === 'ValidationError') {
+        customError.msg = Object.values(err.errors).map((item: {message: string}) => 
+            item.message).join(', ');
+
+        customError.statusCode = 400
     }
 
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({
-            msg: 'Server error',
-            status: err.statusCode,
-            error_mesage: err.message,
+    if (err.errorResponse && err.errorResponse.code && err.errorResponse.code === 11000) {
+        customError.msg = `duplicate value entered for: ${Object.keys(err.errorResponse.keyValue)}`
+        customError.statusCode = 400
+    }
+
+    if (err.name === 'CustomError') {
+        customError.msg = `ERROR: ${err}`
+    }
+
+    return res
+        .status(customError.statusCode)
+        .json({ 
+            msg: customError.msg, 
             // errorBody: err
         })
 }

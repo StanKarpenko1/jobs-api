@@ -1,10 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { Response } from "express";
 import { IAuthenticatedRequest } from "interfaces/auth.interface";
 import { Job } from "../models/Job";
-import { createCustomError, CustomError } from "../errors/custom-error";
+import { CustomError } from "../errors/custom-error";
 import { StatusCodes } from "http-status-codes";
 import { asyncErrorHandler } from "../errors/custom-error";
-import { STATUS_CODES } from "http";
 
 export const getAllJobs = asyncErrorHandler(async (req: IAuthenticatedRequest, res: Response) => {
     const jobs = await Job.find({ createdBy: req.user.userId }).sort('createdAt');
@@ -17,11 +16,12 @@ export const getJob = asyncErrorHandler(async (req: IAuthenticatedRequest, res: 
     const job = await Job.findOne({ _id: jobId, createdBy: userId });
 
     if (!job) {
-        throw createCustomError(`No jobs with id: ${jobId}`, StatusCodes.NOT_FOUND);
+        throw new CustomError(`No jobs with id: ${jobId}`, StatusCodes.NOT_FOUND)
     }
 
     res.status(StatusCodes.OK).json({ job });
 });
+
 
 export const createJob = asyncErrorHandler(async (req: IAuthenticatedRequest, res: Response) => {
     req.body.createdBy = req.user.userId;
@@ -35,10 +35,10 @@ export const deleteJob = asyncErrorHandler(async (req: IAuthenticatedRequest, re
     const job = await Job.findOneAndDelete({ _id: jobId, createdBy: userId });
 
     if (!job) {
-        throw createCustomError(`No jobs with id: ${jobId}`, StatusCodes.NOT_FOUND);
+        throw new CustomError(`No jobs with id: ${jobId}`, StatusCodes.NOT_FOUND)
     }
-
     res.status(StatusCodes.OK).json({ msg: 'Job Deleted', job });
+
 });
 
 export const updateJob = asyncErrorHandler(async (req: IAuthenticatedRequest, res: Response) => {
@@ -49,7 +49,7 @@ export const updateJob = asyncErrorHandler(async (req: IAuthenticatedRequest, re
     } = req;
 
     if (company === '' || position === '') {
-        throw createCustomError('Company or Position fields cannot be empty', StatusCodes.BAD_REQUEST);
+        throw new CustomError('Company or Position fields cannot be empty', StatusCodes.BAD_REQUEST)
     }
 
     const job = await Job.findOneAndUpdate(
@@ -59,7 +59,7 @@ export const updateJob = asyncErrorHandler(async (req: IAuthenticatedRequest, re
     );
 
     if (!job) {
-        throw createCustomError(`No jobs with id: ${jobId}`, StatusCodes.NOT_FOUND);
+        throw new CustomError(`No jobs with id: ${jobId}`, StatusCodes.NOT_FOUND)
     }
 
     res.status(StatusCodes.OK).json({ msg: 'Job Updated', job });
