@@ -7,22 +7,16 @@ import { IAuthenticatedRequest } from "interfaces/auth.interface";
 
 export const register = asyncErrorHandler(async (req: IAuthenticatedRequest, res: Response) => {
     const user = await User.create({ ...req.body });
+
     const token = user.createJWT();
 
     if (!user.email || !user.password) {
-        throw new CustomError("Provide Email and Password", StatusCodes.NOT_FOUND)
+        throw new CustomError("Provide Email and Password", StatusCodes.BAD_REQUEST)
     }
 
     res.status(StatusCodes.CREATED).json({
-        // msg: "Created",
-        // newUser: {
-        //     id: user._id, 
-        //     name: user.name,
-        //     email: user.email,
-        // },
-        // token,
         user
-    });
+    }); 
 });
 
 export const login = asyncErrorHandler( async(req: Request, res: Response ) => {
