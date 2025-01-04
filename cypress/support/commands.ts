@@ -17,14 +17,13 @@ Cypress.Commands.add("seedUser", (userData) => {
     return cy.task("deleteTestingUser", userId).then((result) => {
       expect(result).to.have.property("success", true);
       expect(result).to.have.property("userId", userId);
+
     });
   });
 
 declare namespace Cypress {
 	interface Chainable<Subject = any> {
-        
         seedUser: (userData: any) => Chainable<any>
         deleteUser: (userId: string) => Chainable<any>
-
 	}
 }

@@ -19,6 +19,15 @@ export default defineConfig({
         async deleteTestingUser(userId) {
           return await deleteUser (userId); // Use the deleteUser utility
         },
+        async findUserById(userId) {
+          try {
+            const user = await User.findById(userId);
+            return user ? user : null;
+          } catch (error) {
+            console.error("Error finding user:", error);
+            throw error;
+          }
+        },
 
         async connectToDb() {
           try {
@@ -30,7 +39,7 @@ export default defineConfig({
             throw error;
           }
         },
-        async findUserByEmail(email) {
+        async findUserByEmail(email) { 
           try {
             const user = await User.findOne({ email });
             return user || null;

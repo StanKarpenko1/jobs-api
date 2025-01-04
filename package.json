@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon",
     "cyo": "npx cypress open",
-    "cyr": "npx cypress run"
+    "cyr": "npx cypress run",
+    "cy:spec": "npx cypress run --spec 'cypress/tests/api/login.cy.ts'"
+
   },
   "keywords": [],
   "author": "",
