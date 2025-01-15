@@ -1,0 +1,258 @@
+{
+	"info": {
+		"_postman_id": "6328797d-f7e0-4bf2-b49c-02b94ca18da8",
+		"name": "jobs-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21750884"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"name3\",\n    \"email\": \"my-email12@gmail.com\",\n    \"password\": \"Password1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"// pm.globals.set(\"accessToken\", jsonData.token);",
+									"pm.environment.set(\"accessToken\", jsonData.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"name2\",\n    \"email\": \"email23@gmail.com\",\n    \"password\": \"Password1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "jobs",
+			"item": [
+				{
+					"name": "Create Job",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzZiMTNmOWQ4NmNkZGNhYmMxN2MxMzciLCJuYW1lIjoibmFtZTEiLCJpYXQiOjE3MzUwNzA3MTMsImV4cCI6MTczNzY2MjcxM30.Y7EArvIoselGWZBMQN7JreGpEpJ7KCKvBEEW4s4XO-4",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n    \"company\": \"Netflix\",\n    \"position\": \"FE\"\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/jobs",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User's Jobs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzZiMTNmOWQ4NmNkZGNhYmMxN2MxMzciLCJuYW1lIjoibmFtZTEiLCJpYXQiOjE3MzUwNzA3MTMsImV4cCI6MTczNzY2MjcxM30.Y7EArvIoselGWZBMQN7JreGpEpJ7KCKvBEEW4s4XO-4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/jobs",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/jobs/676d772605eb5e933fad901f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"jobs",
+								"676d772605eb5e933fad901f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Job",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n    \"company\": \"Netflix\",\n    \"position\": \"Full Stack\",\n    \"status\": \"declined\"\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/jobs/676cc8df58f7a884fa0aaf59",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"jobs",
+								"676cc8df58f7a884fa0aaf59"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Job",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/jobs/676cc8df58f7a884fa0aaf59",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"jobs",
+								"676cc8df58f7a884fa0aaf59"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

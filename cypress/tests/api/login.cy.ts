@@ -24,7 +24,7 @@ describe("Authentication - login - register", () => {
 
       // SEED USER
       //@ts-ignore
-      cy.seedUser(testUser).then((userId) => {
+      cy.seedUser(testUser).then((userId: any) => {
         cy.log(`User ID__: ${userId}`);
         cy.wrap(userId).as('userId')
       })
